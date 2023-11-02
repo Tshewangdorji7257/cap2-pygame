@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 import random
+import sys
 
 # Initialize Pygame
 pygame.init()
@@ -41,6 +42,7 @@ lanes = [left_lane, center_lane, right_lane]
 # For animating movement of the lane markers
 lane_mark_move_y = 0
 
+
 # Define the Vehicle class
 class Vehicle(pygame.sprite.Sprite):
 
@@ -61,8 +63,9 @@ class PlayerVehicle(Vehicle):
 
     def __init__(self, x, y):
         # Load the player's vehicle image
-        image = pygame.image.load("C:\\Users\\Damchey\\OneDrive\\Desktop\\pygame\\fPKWt.png")
+        image = pygame.image.load("C:\\Users\\Damchey\\OneDrive\\Desktop\\pygame\\red.png")
         super().__init__(image, x, y)
+
 
 # Player's starting coordinates
 player_x = 250
@@ -74,7 +77,7 @@ player = PlayerVehicle(player_x, player_y)
 player_group.add(player) 
 
 # Load the other vehicle images
-image_filenames = ["C:\\Users\\Damchey\\OneDrive\\Desktop\\pygame\\a6rBl.png","C:\\Users\\Damchey\\OneDrive\\Desktop\\pygame\\fPKWt.png"]
+image_filenames = ["C:\\Users\\Damchey\\OneDrive\\Desktop\pygame\\police car.png","C:\\Users\\Damchey\\OneDrive\\Desktop\\pygame\\red.png"]
 vehicle_images = []
 for filename in image_filenames:
     # Load each vehicle image
@@ -88,6 +91,42 @@ vehicle_group = pygame.sprite.Group()
 crash = pygame.image.load("C:\\Users\\Damchey\\OneDrive\\Desktop\\pygame\\crash.png")
 crash_rect = crash.get_rect()
 
+
+# Define the display_menu function
+def display_menu():
+    menu_font = pygame.font.Font(pygame.font.get_default_font(), 36)
+
+    while True:
+        screen.fill(green)
+
+        title_text = menu_font.render('Retro Highway', True, red)
+        title_rect = title_text.get_rect(center=(width//2, height//4))
+        screen.blit(title_text, title_rect)
+
+        start_text = menu_font.render('Press Enter to Start', True, yellow)
+        start_rect = start_text.get_rect(center=(width//2, height//2))
+        screen.blit(start_text, start_rect)
+
+        quit_text = menu_font.render('Press Q to Quit', True, yellow)
+        quit_rect = quit_text.get_rect(center=(width//2, height//1.5))
+        screen.blit(quit_text, quit_rect)
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == KEYDOWN:
+                if event.key == K_RETURN:
+                    return
+                elif event.key == K_q:
+                    pygame.quit()
+                    sys.exit()
+
+# Call the display_menu function before the game loop
+display_menu()
+
 # Game loop
 clock = pygame.time.Clock()
 fps = 120
@@ -99,16 +138,14 @@ while running:
         if event.type == QUIT:
             running = False
 
-    
-    # move the plyaer's car using the left/right arrows keys
+        # move the player's car using the left/right arrows keys
         if event.type == KEYDOWN:
-
             if event.key == K_LEFT and player.rect.center[0] > left_lane:
                 player.rect.x -= 100
             elif event.key == K_RIGHT and player.rect.center[0] < right_lane:
-                player.rect.x += 100    
+                player.rect.x += 100   
 
-        # check if there's a side awipe collision after changing lanes
+   # check if there's a side awipe collision after changing lanes
         for vehicle in vehicle_group:
             if pygame.sprite.collide_rect(player, vehicle):
 
